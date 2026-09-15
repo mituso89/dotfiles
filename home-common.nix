@@ -46,24 +46,20 @@ in
     };
   };
 
-  programs.starship = {
-    enable = true;
-    settings = {
-      add_newline = false;
-      format = "$directory$git_branch$git_status$cmd_duration$line_break$character";
-      character = {
-        success_symbol = "[❯](purple)";
-        error_symbol = "[❯](red)";
-      };
-      cmd_duration.format = "[$duration]($style) ";
-    };
-  };
+  # Settings deliberately live in home/.config/starship.toml rather than inline
+  # here, so environments without Home Manager (the dev container) can symlink
+  # the exact same file instead of keeping a second copy of the prompt.
+  # Leaving `settings` empty stops Home Manager writing its own starship.toml,
+  # which would collide with the symlink below.
+  programs.starship.enable = true;
 
   # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
   # On WSL the WezTerm link is inert - WezTerm runs on the Windows side and
   # reads its config from the Windows home directory (see README).
   home.file.".config/wezterm".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm";
+  home.file.".config/starship.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/starship.toml";
   home.file.".config/nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
   home.file.".config/herdr".source =

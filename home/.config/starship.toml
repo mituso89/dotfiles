@@ -1,0 +1,12 @@
+# The prompt, shared by macOS, Linux and the dev container.
+# Kept as a real file (not inline Nix settings) so anything that is not
+# Home Manager - a container, a remote box - can symlink this same file.
+add_newline = false
+format = "$directory$git_branch$git_status$cmd_duration$line_break$character"
+
+[character]
+error_symbol = "[❯](red)"
+success_symbol = "[❯](purple)"
+
+[cmd_duration]
+format = "[$duration]($style) "

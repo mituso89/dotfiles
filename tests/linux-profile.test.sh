@@ -106,6 +106,14 @@ test_shared_module_is_platform_neutral() {
     assert_contains "$common" "home.file.\"$link\".source" "home-common.nix no longer links $link"
   done
 
+  # The prompt must stay a real file: the dev container has no Home Manager and
+  # symlinks this same starship.toml, so inlining it as Nix settings again would
+  # silently fork the prompt across environments.
+  assert_contains "$common" 'home.file.".config/starship.toml".source' \
+    "home-common.nix no longer links starship.toml"
+  assert_not_contains "$common" 'starship.settings' "starship settings were inlined back into Nix"
+  [ -f "$ROOT/home/.config/starship.toml" ] || fail "home/.config/starship.toml is missing"
+
   # Machine-specific PATH/toolchain setup lives outside the repo, so the
   # generated ~/.zshrc must still source it when present.
   assert_contains "$common" '~/.zshrc.local' "home-common.nix no longer sources ~/.zshrc.local"
